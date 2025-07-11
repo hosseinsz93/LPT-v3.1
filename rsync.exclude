@@ -1,0 +1,10 @@
+#.#
+*.d
+*.o
+*~
+.#.
+.bak.*
+dataPartExtr
+tracking
+tracking.save
+tracking.still.running

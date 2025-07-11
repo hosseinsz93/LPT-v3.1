@@ -1,0 +1,126 @@
+! Intervals for solution output
+-tio 200
+-imm 1 
+! Flow Reynolds number
+-ren 25000 
+! CFL number
+-cfl 0.2
+! Nondimensionalized time step 
+! dt = Delta t / (L/U)
+-dt 0.01
+! Non-dimensionalize inflow or not ?
+-nondimensionalize_inflow 1 
+! Single grid iterations of Poisson equation after mg
+-after_mg 0 
+-totalsteps 10 
+!-rstart 2000 
+!-rs_fsi 2200 
+! Characteristic length
+-chact_leng 25.4
+-chact_leng_valve 25.4
+!-chact_leng 1
+!-chact_leng_valve 1
+-ts_p_cycle 2000 
+-inflow 1 
+-inlet 3 
+-k_limit 10
+!-init1 
+-slice 1 
+-twoD 0 
+-mhv 0 
+-str 1
+!-lv 1 
+-aneurysm 1
+-cfr 0.1 
+!Specify type of solver
+!0 - RK, 1- NK, 2 - RK_Multigrid
+-solver 1 
+-imp 3  
+-poisson 1 
+!--- Setting up for Newton Krylov solver 
+!-ksp_monitor 1
+!-ksp_max_it 35 
+!-- SNES - specification ----------
+-snes_mf
+-snes_type tr
+-snes_max_it 20 
+-snes_monitor
+-snes_ksp_ew
+-snes_ksp_ew_version 3
+-snes_atol 1e-8
+-snes_rtol 1e-5
+-snes_max_funcs 50
+-dmmg_jacobian_mf_fd 1
+! Multigrid grid level
+-mg_level 3
+-mg_coarse_ksp_type fgmres
+-mg_coarse_gmres_restart 20
+!-mg_coarse_ksp_truemonitor
+!-mg_coarse_ksp_max_it 25
+
+-mg_k_semi 1
+!-mg_i_semi 1
+!-mg_j_semi 1
+! KSP solver for Poisson equation
+-ps_ksp_type fgmres 
+!-ps_pc_type hypre
+!-ps_pc_hypre_type bommeramg
+!-ps_pc_type bjacobi
+-ps_ksp_gmres_restart 20
+!-ps_ksp_atol 1.e-15
+-ps_ksp_rtol 1.e-15
+-ps_ksp_max_it 30 
+-ps_ksp_truemonitor
+
+
+!-ps_pc_mg_type full
+!-ps_mg_levels_1_ksp_type richardson
+!-ps_mg_levels_2_ksp_type richardson
+!-ps_mg_levels_3_ksp_type fgmres
+!-ps_mg_levels_1_pc_factor_shift_nonzero
+!-ps_mg_levels_2_pc_factor_shift_nonzero
+!-ps_mg_levels_3_pc_factor_shift_nonzero
+!-ps_mg_coarse_pc_factor_shift_nonzero
+
+
+
+! Number of IBM_Thin files
+-all 1 
+-ibm_thin 0
+-ibm_solid 1
+-IBM_File_Type 1 
+
+! Option for output
+!---------------- Option for output--------------------------------------------
+-all 1 
+-tis 0 
+-tie 250000
+-ts 200 
+!-qcr 0 
+!Use shear analysis ?
+-shear 0 
+-osi   0 
+-element 0 
+!This choice to flip normal inward (if use internal flow)
+-normal_flip 0 
+-IBM_Shear 0 
+-start_shear 0 
+-interpolate 1
+-file_export 2 
+!The distance from the surface of IBM to the first grid node
+-dpj 0.02
+!The surface we want to compare stress &Pressure
+-k_min 1 
+-k_max 20 
+!Specify the dimesion 
+-dynes 0 
+-Hg    0 
+!Non-dimensionalized parameters
+-real_chact_leng 1
+-specific_weight 1
+-real_chact_vel 1
+-ptc_dt 0.01
+!k_plane 0
+-cl 1.0
+-ptc_num 3456 
+!For -ptc_num of 10098 there are 2098 particles inside at the inlet

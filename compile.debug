@@ -1,0 +1,113 @@
+#!/bin/bash
+
+if [[ `hostname` == zagros ]]; then
+    (
+        export PETSC_VER=31
+
+        module load gnu acml openmpi petsc/3.1-p8
+
+        export LIB_EXTR='-lHYPRE -lacml -lgfortran'
+
+        # debug
+        # export CFLAGS_EXT='-g'
+        # export CFLAGS_EXT='-g -O3'
+        # optimize
+        export CFLAGS_EXT='-DNDEBUG -O3'
+
+        # This environmental variable is set from one of the above
+        export CXXFLAGS_EXT="$CFLAGS_EXT"
+
+        make -j -k tracking
+        make -j -k dataPartExtr
+
+        echo Debugging > Og.dat
+    )
+fi
+
+if [[ `hostname -f` == *.cm.cluster ]]; then
+    (
+        # debug
+        export CFLAGS_EXT='-g'
+        # export CFLAGS_EXT='-g -O3'
+        # optimize
+        # export CFLAGS_EXT='-DNDEBUG -O3'
+
+        # This environmental variable is set from one of the above
+        export CXXFLAGS_EXT="$CFLAGS_EXT"
+
+        # NO MODULE FOR COMPILER: use the default compiler, currently gcc (GCC) 4.8.5
+        module load mvapich2/gcc/64/2.2rc1
+        module load blas/gcc/64/3.8.0
+        module load lapack/gcc/64/3.8.0
+
+        # These are set by: module load blas/gcc/64/3.8.0
+#       export BLASDIR=/gpfs/software/blas/BLAS-3.8.0/
+#       export BLASLIB=blas
+
+        # This is set by: module load lapack/gcc/64/3.8.0
+#       export LAPACK_DIR=
+        export LAPACK_LIB='-l lapack'
+
+        export HYPREBASE=/gpfs/home/hseyyedzadeh/lib/hypre-2.11.2
+        export HYPREINC="-I ${HYPREBASE}/src/hypre/include"
+        export HYPREDIR="-L ${HYPREBASE}/src/hypre/lib"
+        export HYPRELIB='-l HYPRE'
+
+        export PETSC_VER=31
+        export PETSC_BASE=/gpfs/home/hseyyedzadeh/lib/petsc-3.1-p8-debug
+        export PETSC_INC="-I ${PETSC_BASE}/include -I ${PETSC_BASE}/linux-gnu-c-debug/include"
+        export PETSC_DIR="-L ${PETSC_BASE}/linux-gnu-c-debug/lib"
+        export PETSC_LIB='-l petsc'
+
+        make -k -f makefile.seawulf
+        make -k -f makefile.seawulf dataPartExtr
+
+        echo Debugging > Og.dat
+    )
+fi
+
+if [[ `hostname -s` == acorn || `hostname -s` == perryws ]]; then
+    (
+        export PETSC_VER=31
+        # export PETSC_VER=32
+        
+        export PATH=/usr/lib/hpc/gnu7/mpi/mvapich2/2.3.3/bin:$PATH
+        export LD_LIBRARY_PATH=/usr/lib/hpc/gnu7/mpi/mvapich2/2.3.3/lib64:$LD_LIBRARY_PATH
+
+        if [[ $PETSC_VER == 31 ]]; then
+            echo Compiling with petsc $PETSC_VER
+            export PETSC_DIR=/usr/local/lib/petsc-3.1-p8
+            export PETSC_ARCH=linux
+            export PETSC_INC="$PETSC_DIR/include -I $PETSC_DIR/$PETSC_ARCH/include"
+            export PETSC_LIB=$PETSC_DIR/linux-debug/lib
+            # export PETSC_LIB=$PETSC_DIR/linux/lib
+
+            export LIB_EXTR='-lblas -llapack -lX11'
+        fi
+
+        if [[ $PETSC_VER == 32 ]]; then
+            echo Compiling with $PETSC_VER
+            export PETSC_DIR=/usr/local/lib/petsc-3.2-p7
+            export PETSC_ARCH=linux
+            export PETSC_INC="$PETSC_DIR/include -I $PETSC_DIR/$PETSC_ARCH/include"
+            export PETSC_LIB=$PETSC_DIR/linux-debug/lib
+            # export PETSC_LIB=$PETSC_DIR/linux/lib
+
+            export LIB_EXTR='-lblas -llapack -lX11'
+        fi
+
+        # DEBUG
+        # export CFLAGS_EXT='-g3 -O0'
+        # export CFLAGS_EXT='-g3 -O1'
+        # OPTIMIZE
+        export CFLAGS_EXT="-DNDEBUG -O3"
+
+        # This environmental variable is set from one of the above
+        export CXXFLAGS_EXT="$CFLAGS_EXT"
+
+
+        make -k
+
+        echo Debugging > Og.dat
+    )
+fi
